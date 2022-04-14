@@ -1,4 +1,6 @@
 #!/bin/bash
 cd ./services
-docker-compose build
+#docker-compose build
+cd ../../web
+yarn install
 docker-compose up
