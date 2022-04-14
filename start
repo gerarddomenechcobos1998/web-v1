@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ./services
+docker-compose build
+docker-compose up
