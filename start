@@ -1,6 +1,8 @@
 #!/bin/bash
-cd ./services
 #docker-compose build
-cd ../../web
+cd ./web
+pwd
 yarn install
+cd ../services
+pwd
 docker-compose up
