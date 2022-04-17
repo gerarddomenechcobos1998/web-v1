@@ -95,7 +95,7 @@ const HomeScreen = (props: Props) => {
         );
     }
 
-    const RimLight = ({ brightness, color }) => {
+    const RimLight = ({ brightness, color }) => { // A rim light is placed behind a subject that exposes the outline or rim of the subject with light
         const light = useRef();
         React.useEffect(() => {
             if (light && light.current) {
