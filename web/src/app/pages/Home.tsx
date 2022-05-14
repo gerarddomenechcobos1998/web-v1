@@ -31,7 +31,7 @@ const HomeScreen = (props: Props) => {
     
     return (
         <View style={{ flex: 1 }} >
-            <View3D>
+            <View3D devUI={true}>
                 <MyBox/>
             </View3D>
         </View>

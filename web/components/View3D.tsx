@@ -91,7 +91,6 @@ type Props = {
     disableFloor?:Boolean,
     disableFog?:Boolean,
     ambientLightIntensity?:number,
-    firstPerson?:Boolean,
     scenePosition?:number[],
     controls?:any,
     camera?:any,
@@ -101,7 +100,6 @@ type Props = {
 
 const View3D = (props:Props) => {
     var currentConfig = {
-        firstPerson: false,
         controls: true,
         lights: true,
         camera: true,
@@ -124,7 +122,6 @@ const View3D = (props:Props) => {
         camera: props.disableDefaultCamera?false:currentConfig.camera,
         floor: props.disableFloor?false:currentConfig.floor,
         fog: props.disableFog?false:currentConfig.fog,
-        firstPerson: props.firstPerson??currentConfig.firstPerson,
         ambientLight: {    
             value: props.ambientLightIntensity??currentConfig.ambientLightIntensity,
             min: 0,
@@ -201,8 +198,8 @@ const View3D = (props:Props) => {
 
                 {config.fog?<fog attach="fog" args={['#ffffff', 0, 100]} />:null}
                 
-                { !config.firstPerson && config.controls ? getControls() : null }
-                { !config.firstPerson && config.camera ? getCamera() : null }
+                { config.controls ? getControls() : null }
+                { config.camera ? getCamera() : null }
 
                 <group position={props.scenePosition??[0,0,0]}>
                     { config.lights ? <Lights />  : null }
