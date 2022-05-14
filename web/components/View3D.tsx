@@ -1,29 +1,13 @@
 import React, { memo, useRef, Suspense} from "react";
 import { View} from 'react-native';
 import { PerspectiveCamera, OrbitControls, Environment, ContactShadows} from "@react-three/drei";
-import { Canvas, extend } from 'react-three-fiber';
+import { Canvas, extend } from '@react-three/fiber';
 import InfiniteGridHelper from './InfiniteGridHelper';
 import {Color, sRGBEncoding, ACESFilmicToneMapping, PCFSoftShadowMap } from 'three';
 import {useControls, button} from 'leva';
-import ApiCaller from "../../../core/ApiCaller";
-import * as DocumentPicker from 'expo-document-picker';
-import Player from './Player';
-import { EffectComposer, SSAO } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
+// import ApiCaller from "../../../core/ApiCaller";
+// import * as DocumentPicker from 'expo-document-picker';
 import { Leva } from 'leva';
-
-function Effects() {
-    return (
-      <EffectComposer>
-        <SSAO
-          blendFunction={BlendFunction.MULTIPLY} // Use NORMAL to see the effect
-          samples={31}
-          radius={50}
-          intensity={300}
-        />
-      </EffectComposer>
-    );
-  }
 
 // Lights
 function KeyLight({ brightness, color }) {
@@ -105,10 +89,9 @@ type Props = {
     disableDefaultLights?:Boolean,
     disableDefaultCamera?:Boolean,
     disableFloor?:Boolean,
+    disableFog?:Boolean,
     ambientLightIntensity?:number,
     firstPerson?:Boolean,
-    playerHeight?:number,
-    playerSpeed?:number,
     scenePosition?:number[],
     controls?:any,
     camera?:any,
@@ -125,8 +108,7 @@ const View3D = (props:Props) => {
         floor: true,
         ambientLightIntensity: 0.3,
         environment: "city",
-        playerHeight: 1.8,
-        playerSpeed: 0.5
+        fog: true
     }
     try {
         const storedConfig = require('../../../assets/3dconf.json');
@@ -141,19 +123,8 @@ const View3D = (props:Props) => {
         lights: props.disableDefaultLights?false:currentConfig.lights,
         camera: props.disableDefaultCamera?false:currentConfig.camera,
         floor: props.disableFloor?false:currentConfig.floor,
+        fog: props.disableFog?false:currentConfig.fog,
         firstPerson: props.firstPerson??currentConfig.firstPerson,
-        playerHeight: {
-            value: props.playerHeight??currentConfig.playerHeight,
-            min: 0,
-            max: 3,
-            step: 0.1
-        },
-        playerSpeed: {
-            value: props.playerSpeed??currentConfig.playerSpeed,
-            min: 0,
-            max: 500,
-            step: 1
-        },
         ambientLight: {    
             value: props.ambientLightIntensity??currentConfig.ambientLightIntensity,
             min: 0,
@@ -168,38 +139,47 @@ const View3D = (props:Props) => {
             value: currentConfig.environment,
             options: ['', 'sunset', 'dawn', 'night', 'warehouse', 'forest', 'apartment', 'studio', 'city', 'park', 'lobby'],
         },
-        save: button(() => saveConfig(configRef.current)),
-        "Add Model": button(async () => {
-            const result = await DocumentPicker.getDocumentAsync({type: "model/*"});
-            if(!result.name.endsWith('.gltf') && !result.name.endsWith('.glb')) {
-                alert('Invalid file format: Choose only glb or gltf files.');
-                return;
-            }
-            if (result.type == 'success') {          
-                let { name } = result;
-                console.log(result);
-                const apiCaller = new ApiCaller();
-                const formData = new FormData();
-                formData.append('file', result.file);
-                await apiCaller.uploadFile('/api/v1/3dmodels', formData);
-            }
-            console.log(result);
-        })
+        // save: button(() => saveConfig(configRef.current)),
+        // "Add Model": button(async () => {
+        //     const result = await DocumentPicker.getDocumentAsync({type: "model/*"});
+        //     if(!result.name.endsWith('.gltf') && !result.name.endsWith('.glb')) {
+        //         alert('Invalid file format: Choose only glb or gltf files.');
+        //         return;
+        //     }
+        //     if (result.type == 'success') {          
+        //         let { name } = result;
+        //         console.log(result);
+        //         const apiCaller = new ApiCaller();
+        //         const formData = new FormData();
+        //         formData.append('file', result.file);
+        //         await apiCaller.uploadFile('/api/v1/3dmodels', formData);
+        //     }
+        //     console.log(result);
+        // })
     }
 
-    const config = useControls(levaOptions);
+    const toValue = (options) => {
+        Object.keys(options).forEach((key) => {
+            if(options[key].hasOwnProperty("value")) {
+                options[key] = options[key].value;
+            }
+        });
+        return options;
+    }
+    
+    const config = props.devUI?useControls(levaOptions):toValue(levaOptions)
     const configRef = useRef(config);
 
     React.useEffect(() => {
         configRef.current = config;
     }, [config]);
 
-    const saveConfig = async (config) => {
-        const apiCaller = new ApiCaller();
-        const result = await apiCaller.call('/v1/3dconfigs/current', 'post', config);
-    }
+    // const saveConfig = async (config) => {
+    //     const apiCaller = new ApiCaller();
+    //     const result = await apiCaller.call('/v1/3dconfigs/current', 'post', config);
+    // }
 
-    const getControls = () => props.controls ?? <OrbitControls target={[0, 0.5, 0]} />;
+    const getControls = () => props.controls ?? <OrbitControls target={[0, 0, 0]} />;
     const getCamera = () => props.camera ?? <PerspectiveCamera position={[10, 6.6, 10]} near={1} far={9999999999} fov={30} /> 
     
     return (
@@ -215,18 +195,17 @@ const View3D = (props:Props) => {
                     //gl.physicallyCorrectLights = true;
                     gl.shadowMap.enabled = true;
                     gl.shadowMap.type = PCFSoftShadowMap;
+                    
                 }}      
                 style={{flex:1}} colorManagement gl={{antialias: true }}>
 
-                <fog attach="fog" args={['#ffffff', 0, 100]} />
+                {config.fog?<fog attach="fog" args={['#ffffff', 0, 100]} />:null}
                 
                 { !config.firstPerson && config.controls ? getControls() : null }
                 { !config.firstPerson && config.camera ? getCamera() : null }
 
                 <group position={props.scenePosition??[0,0,0]}>
                     { config.lights ? <Lights />  : null }
-
-                    { config.firstPerson? <Player position={[0, 0, 0]} playerHeight={config.playerHeight} playerSpeed={config.playerSpeed} /> : null }
                     { config.floor ? <infiniteGridHelper args={[1, 1 * 10, new Color('#ccc'), 1000]} /> : null }
                     {/* <ContactShadows darkness={1} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]} opacity={0.3} width={30} height={30} blur={1.1} far={50} /> */}
                    
