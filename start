@@ -3,6 +3,8 @@
 cd ./web
 pwd
 yarn install
-cd ../services
+cd ../data/nodered
+npm i
+cd ../../services
 pwd
 docker-compose up
