@@ -5,8 +5,8 @@ import { Canvas, extend } from '@react-three/fiber';
 import InfiniteGridHelper from './InfiniteGridHelper';
 import {Color, sRGBEncoding, ACESFilmicToneMapping, PCFSoftShadowMap } from 'three';
 import {useControls, button} from 'leva';
-// import ApiCaller from "../../../core/ApiCaller";
-// import * as DocumentPicker from 'expo-document-picker';
+import ApiCaller from "../src/core/ApiCaller";
+import * as DocumentPicker from 'expo-document-picker';
 import { Leva } from 'leva';
 
 // Lights
@@ -109,7 +109,7 @@ const View3D = (props:Props) => {
         fog: true
     }
     try {
-        const storedConfig = require('../../../assets/3dconf.json');
+        const storedConfig = require('../src/assets/3dconf.json');
         currentConfig = {
             ...currentConfig,
             ...storedConfig
@@ -136,23 +136,23 @@ const View3D = (props:Props) => {
             value: currentConfig.environment,
             options: ['', 'sunset', 'dawn', 'night', 'warehouse', 'forest', 'apartment', 'studio', 'city', 'park', 'lobby'],
         },
-        // save: button(() => saveConfig(configRef.current)),
-        // "Add Model": button(async () => {
-        //     const result = await DocumentPicker.getDocumentAsync({type: "model/*"});
-        //     if(!result.name.endsWith('.gltf') && !result.name.endsWith('.glb')) {
-        //         alert('Invalid file format: Choose only glb or gltf files.');
-        //         return;
-        //     }
-        //     if (result.type == 'success') {          
-        //         let { name } = result;
-        //         console.log(result);
-        //         const apiCaller = new ApiCaller();
-        //         const formData = new FormData();
-        //         formData.append('file', result.file);
-        //         await apiCaller.uploadFile('/api/v1/3dmodels', formData);
-        //     }
-        //     console.log(result);
-        // })
+        save: button(() => saveConfig(configRef.current)),
+        "Add Model": button(async () => {
+            const result = await DocumentPicker.getDocumentAsync({type: "model/*"});
+            if(!result.name.endsWith('.gltf') && !result.name.endsWith('.glb')) {
+                alert('Invalid file format: Choose only glb or gltf files.');
+                return;
+            }
+            if (result.type == 'success') {          
+                let { name } = result;
+                console.log(result);
+                const apiCaller = new ApiCaller();
+                const formData = new FormData();
+                formData.append('file', result.file);
+                await apiCaller.uploadFile('/api/v1/3dmodels', formData);
+            }
+            console.log(result);
+        })
     }
 
     const toValue = (options) => {
@@ -171,10 +171,12 @@ const View3D = (props:Props) => {
         configRef.current = config;
     }, [config]);
 
-    // const saveConfig = async (config) => {
-    //     const apiCaller = new ApiCaller();
-    //     const result = await apiCaller.call('/v1/3dconfigs/current', 'post', config);
-    // }
+    const saveConfig = async (config) => {
+        const apiCaller = new ApiCaller();
+        try{
+            const result = await apiCaller.call('/v1/3dconfigs/current', 'post', config);
+        }catch(e){}
+    }
 
     const getControls = () => props.controls ?? <OrbitControls target={[0, 0, 0]} />;
     const getCamera = () => props.camera ?? <PerspectiveCamera position={[10, 6.6, 10]} near={1} far={9999999999} fov={30} /> 
