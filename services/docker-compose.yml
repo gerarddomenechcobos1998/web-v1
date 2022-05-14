@@ -16,6 +16,17 @@ services:
       - /web/node_modules
       - /web/.next
 
+  node-red:
+    image: nodered/node-red:latest
+    container_name: nodered
+    environment:
+      - TZ=Europe/Madrid
+    ports:
+      - '1880:1880'
+    volumes:
+      - ../data/nodered:/data
+      - ../system:/tmp
+
   webserver:
     container_name: "webserverNextJS"
     image: nginx:latest
@@ -24,6 +35,6 @@ services:
       - '443:443'
     depends_on:
       - 'web'
-      
+      - 'node-red'
     volumes:
       - ./nginx:/etc/nginx/conf.d

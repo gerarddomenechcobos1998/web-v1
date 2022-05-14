@@ -1,0 +1,376 @@
+[
+    {
+        "id": "2a763241c11cf20b",
+        "type": "tab",
+        "label": "3D API",
+        "disabled": false,
+        "info": "protofy3dapi",
+        "env": []
+    },
+    {
+        "id": "b3500e7d8feae63a",
+        "type": "http response",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1250,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "070ebdae2f2a601f",
+        "type": "change",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ok",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 520,
+        "wires": [
+            [
+                "b3500e7d8feae63a"
+            ]
+        ]
+    },
+    {
+        "id": "f0e039d1868d9015",
+        "type": "http in",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "url": "/api/v1/3dmodels",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 280,
+        "y": 300,
+        "wires": [
+            [
+                "cc35af75d9ece486"
+            ]
+        ]
+    },
+    {
+        "id": "cc35af75d9ece486",
+        "type": "function",
+        "z": "2a763241c11cf20b",
+        "name": "Extract multipart data",
+        "func": "const boundary = msg.req.headers['content-type'].split('boundary=')[1];\nmsg.payload = parseMultipartData.parse(msg.payload, boundary)[0];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "parseMultipartData",
+                "module": "parse-multipart-data"
+            }
+        ],
+        "x": 560,
+        "y": 300,
+        "wires": [
+            [
+                "78ca626dbcc39160"
+            ]
+        ]
+    },
+    {
+        "id": "070c377251c4d593",
+        "type": "file",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "filename": "",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 600,
+        "y": 480,
+        "wires": [
+            [
+                "3622f496acae33d0"
+            ]
+        ]
+    },
+    {
+        "id": "08dba782955f45a3",
+        "type": "change",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "filename",
+                "pt": "msg",
+                "to": "\"/tmp/\" & payload.filename",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.data",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "origPath",
+                "pt": "msg",
+                "to": "filename",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 420,
+        "wires": [
+            [
+                "070c377251c4d593"
+            ]
+        ]
+    },
+    {
+        "id": "479444bd99a3dfdd",
+        "type": "exec",
+        "z": "2a763241c11cf20b",
+        "command": "cd /tmp; node /platform/packages/nodered/node_modules/gltfjsx/cli.js -t -p 4 ",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "convert",
+        "x": 820,
+        "y": 300,
+        "wires": [
+            [],
+            [],
+            [
+                "8cdb8164cd6d0b38"
+            ]
+        ]
+    },
+    {
+        "id": "3622f496acae33d0",
+        "type": "change",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "filename",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 540,
+        "wires": [
+            [
+                "479444bd99a3dfdd"
+            ]
+        ]
+    },
+    {
+        "id": "b166fbf4685e52bd",
+        "type": "file in",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "filename": "",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 820,
+        "y": 400,
+        "wires": [
+            [
+                "aa4b8d27b150ccc0"
+            ]
+        ]
+    },
+    {
+        "id": "8cdb8164cd6d0b38",
+        "type": "function",
+        "z": "2a763241c11cf20b",
+        "name": "get tsx filename",
+        "func": "var filename = msg.filename.split('/');\nfilename = filename[filename.length-1];\nfilename = filename.split('.')[0];\nfilename = filename.charAt(0).toUpperCase() + filename.slice(1);\nmsg.filename = '/tmp/'+filename+'.tsx'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 360,
+        "wires": [
+            [
+                "b166fbf4685e52bd"
+            ]
+        ]
+    },
+    {
+        "id": "aa4b8d27b150ccc0",
+        "type": "function",
+        "z": "2a763241c11cf20b",
+        "name": "replace paths",
+        "func": "String.prototype.replaceAll = function (search, replacement) {\n    var target = this;\n    return target.split(search).join(replacement);\n};\n\nmsg.payload = msg.payload.replaceAll(\"'/\"+msg.origFilename+\"'\", \"require('../assets/\"+msg.origFilename+\"')\");\nmsg.payload = msg.payload.replaceAll('three-stdlib', 'three/examples/jsm/loaders/GLTFLoader');\nmsg.filename = msg.filename.split('/');\nmsg.filename = \"/project/app/src/components/\"+msg.filename[msg.filename.length -1];\nfs.copyFileSync(msg.origPath, \"/project/app/src/assets/\"+msg.origFilename);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            }
+        ],
+        "x": 840,
+        "y": 460,
+        "wires": [
+            [
+                "6ce465f990eedac7"
+            ]
+        ]
+    },
+    {
+        "id": "78ca626dbcc39160",
+        "type": "change",
+        "z": "2a763241c11cf20b",
+        "name": "keep original filename",
+        "rules": [
+            {
+                "t": "set",
+                "p": "origFilename",
+                "pt": "msg",
+                "to": "payload.filename",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 360,
+        "wires": [
+            [
+                "08dba782955f45a3"
+            ]
+        ]
+    },
+    {
+        "id": "6ce465f990eedac7",
+        "type": "file",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "filename": "",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 820,
+        "y": 520,
+        "wires": [
+            [
+                "070ebdae2f2a601f"
+            ]
+        ]
+    },
+    {
+        "id": "9f66073fce6b659f",
+        "type": "inject",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 60,
+        "wires": [
+            [
+                "bee02b5d0c253a81"
+            ]
+        ]
+    },
+    {
+        "id": "07feb25fd4b59a75",
+        "type": "file",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "filename": "/tmp",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 670,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bee02b5d0c253a81",
+        "type": "change",
+        "z": "2a763241c11cf20b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "hello",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 60,
+        "wires": [
+            [
+                "07feb25fd4b59a75"
+            ]
+        ]
+    }
+]

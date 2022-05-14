@@ -1428,6 +1428,27 @@
     xcode "^3.0.1"
     xml2js "0.4.23"
 
+"@expo/config-plugins@^4.0.14":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@expo/config-plugins/-/config-plugins-4.1.5.tgz#9d357d2cda9c095e511b51583ede8a3b76174068"
+  integrity sha512-RVvU40RtZt12HavuDAe+LDIq9lHj7sheOfMEHdmpJ/uTA8pgvkbc56XF6JHQD+yRr6+uhhb+JnAasGq49dsQbw==
+  dependencies:
+    "@expo/config-types" "^45.0.0"
+    "@expo/json-file" "8.2.36"
+    "@expo/plist" "0.0.18"
+    "@expo/sdk-runtime-versions" "^1.0.0"
+    "@react-native/normalize-color" "^2.0.0"
+    chalk "^4.1.2"
+    debug "^4.3.1"
+    find-up "~5.0.0"
+    getenv "^1.0.0"
+    glob "7.1.6"
+    resolve-from "^5.0.0"
+    semver "^7.3.5"
+    slash "^3.0.0"
+    xcode "^3.0.1"
+    xml2js "0.4.23"
+
 "@expo/config-types@^43.0.1":
   version "43.0.1"
   resolved "https://registry.yarnpkg.com/@expo/config-types/-/config-types-43.0.1.tgz#3e047dccb371741a540980eaff26fb0c95039c30"
@@ -1437,6 +1458,11 @@
   version "44.0.0"
   resolved "https://registry.yarnpkg.com/@expo/config-types/-/config-types-44.0.0.tgz#d3480fe2c99f9e895dae4ebba58b74ed72d03e26"
   integrity sha512-d+gpdKOAhqaD5RmcMzGgKzNtvE1w+GCqpFQNSXLliYlXjj+Tv0eL8EPeAdPtvke0vowpPFwd5McXLA90dgY6Jg==
+
+"@expo/config-types@^45.0.0":
+  version "45.0.0"
+  resolved "https://registry.yarnpkg.com/@expo/config-types/-/config-types-45.0.0.tgz#963c2fdce8fbcbd003758b92ed8a25375f437ef6"
+  integrity sha512-/QGhhLWyaGautgEyU50UJr5YqKJix5t77ePTwreOVAhmZH+ff3nrrtYTTnccx+qF08ZNQmfAyYMCD3rQfzpiJA==
 
 "@expo/config@6.0.19":
   version "6.0.19"
@@ -1528,6 +1554,15 @@
   version "8.2.35"
   resolved "https://registry.yarnpkg.com/@expo/json-file/-/json-file-8.2.35.tgz#d0f0c74cdde2ae26686708912cf23ff81a8d67ac"
   integrity sha512-cQFLGSNRRFbN9EIhVDpMCYuzXbrHUOmKEqitBR+nrU6surjKGsOsN9Ubyn/L/LAGlFvT293E4XY5zsOtJyiPZQ==
+  dependencies:
+    "@babel/code-frame" "~7.10.4"
+    json5 "^1.0.1"
+    write-file-atomic "^2.3.0"
+
+"@expo/json-file@8.2.36":
+  version "8.2.36"
+  resolved "https://registry.yarnpkg.com/@expo/json-file/-/json-file-8.2.36.tgz#62a505cb7f30a34d097386476794680a3f7385ff"
+  integrity sha512-tOZfTiIFA5KmMpdW9KF7bc6CFiGjb0xnbieJhTGlHrLL+ps2G0OkqmuZ3pFEXBOMnJYUVpnSy++52LFxvpa5ZQ==
   dependencies:
     "@babel/code-frame" "~7.10.4"
     json5 "^1.0.1"
@@ -4828,12 +4863,12 @@ expo-constants@~13.0.2:
     "@expo/config" "^6.0.6"
     uuid "^3.3.2"
 
-expo-document-picker@^10.1.3:
-  version "10.1.3"
-  resolved "https://registry.yarnpkg.com/expo-document-picker/-/expo-document-picker-10.1.3.tgz#68a82635e9473eb19f128193f1111e7400055a7d"
-  integrity sha512-JKARJBnQ5Aug92hg2MFKrM2LqiMQabcUBYJwBhwSuc0A7dNUeprw0hkaOK0D9Fk7Ae9t+flRX0N5R/aADek3HA==
+expo-document-picker@^10.2.1:
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/expo-document-picker/-/expo-document-picker-10.2.1.tgz#df2d06a8c1d85ca6417b56f521925ec66704092e"
+  integrity sha512-cjul250naq3Z7ZDe03bDY0V+nYpw/5WAXNwSZRX/04GIWE/l7EqIQ1xp9Vxrb9Zfvmn3N1C5A4Yu2jixdx4vjw==
   dependencies:
-    "@expo/config-plugins" "^4.0.2"
+    "@expo/config-plugins" "^4.0.14"
     uuid "^3.3.2"
 
 expo-error-recovery@~3.0.5:
@@ -9229,6 +9264,11 @@ schema-utils@^3.0.0, schema-utils@^3.1.1:
     "@types/json-schema" "^7.0.8"
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
+
+scrollama@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/scrollama/-/scrollama-3.1.1.tgz#0427c4d28c600bc62f467b252c00b5284ff815ab"
+  integrity sha512-LYm58kGb4nkBjMFdt4dAX3utfWKa48nQmBK0fds2tFyvR28l2MC3FPnuXUnU6qqy2Ovs3YkUfCZ6ZetnIkPkLw==
 
 semver@7.0.0:
   version "7.0.0"
