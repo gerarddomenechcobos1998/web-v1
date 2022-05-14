@@ -38,6 +38,12 @@ class ApiCaller {
             })
             .then(response => response.json())
     }
+    async uploadFile(url:string, formData:FormData): Promise<any> {
+        return fetch(url, {
+            method: 'post',
+            body: formData
+        })
+    }
 }
 
 export default ApiCaller;
