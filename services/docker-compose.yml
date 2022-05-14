@@ -25,7 +25,7 @@ services:
       - '1880:1880'
     volumes:
       - ../data/nodered:/data
-      - ../system:/tmp
+      - ../system:/tmp/system
 
   webserver:
     container_name: "webserverNextJS"
